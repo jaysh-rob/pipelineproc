@@ -24,6 +24,12 @@ tools {
                   echo "This is for Test"
                   sh "mvn test"
             }
+        
+        post {
+            always {
+                junit 'target/surefire-reports/*.xml'
+            }
+        }
 
         }
         
