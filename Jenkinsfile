@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
 tools {
 
@@ -8,7 +8,8 @@ tools {
 
     stages {
         
-        stage('Compile') {
+        stage('Compile') { //prod
+	    agent any	
             steps {
                 echo "This is for compile"
                 sh "mvn compile"
@@ -17,7 +18,8 @@ tools {
 
         }
         
-        stage('Test') {
+        stage('Test') { //Test
+	    agent any
             steps {
                   echo "This is for Test"
                   sh "mvn test"
@@ -25,7 +27,9 @@ tools {
 
         }
         
-        stage('Package') {
+        stage('Package') { //Dev
+	    agent {label 'linux_slave'}
+
             steps {
                 
                 echo "This is for Package"
