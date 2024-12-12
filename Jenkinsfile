@@ -16,12 +16,18 @@ pipeline {
         stage('Compile') { //prod
             agent any    
             steps {
-                echo "This is for compile"
+                echo "This is for compile ${params.Env}"
                 sh "mvn compile"
             }
         }
         
         stage('Test') { //Test
+
+                 when{
+            expression{
+                params.executeTests == true 
+            }
+         }
             agent any
             steps {
                 echo "This is for Test"
@@ -38,7 +44,7 @@ pipeline {
             //agent { label 'linux_slave' }
             agent any
             steps {
-                echo "This is for Package"
+                echo "This is for Package ${params.appversion}"
                 sh "mvn package"
             }
         }
