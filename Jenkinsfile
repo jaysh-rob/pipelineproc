@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+tools {
+
+     maven  "mvn_proj" 
+}
+
     stages {
         
         stage('Compile') {
