@@ -7,27 +7,25 @@ pipeline {
 
     parameters {
         string (defaultValue: 'Test', description: 'Environment to deploy ', name: 'ENV')
-        booleanParam (defaultValue: true, description: 'decide to run tc', name: 'execativeTests')
-        choice (choices: ['1.1', '1.2 ', '1.3'], name: 'APPVERSION')
+        booleanParam (defaultValue: true, description: 'Decide to run test cases', name: 'executiveTests')  // Corrected the typo
+        choice (choices: ['1.1', '1.2', '1.3'], name: 'APPVERSION') // Fixed the extra space in choice options
     }
 
     stages {
-        
-        stage('Compile') { //prod
-            agent any    
+        stage('Compile') { // Compile stage
+            agent any
             steps {
-                echo "This is for compile ${params.Env}"
+                echo "This is for compile ${params.ENV}" // Fixed ENV parameter reference
                 sh "mvn compile"
             }
         }
-        
-        stage('Test') { //Test
 
-                 when{
-            expression{
-                params.executeTests == true 
+        stage('Test') { // Test stage
+            when {
+                expression {
+                    return params.executiveTests == true // Corrected the boolean check
+                }
             }
-         }
             agent any
             steps {
                 echo "This is for Test"
@@ -39,12 +37,11 @@ pipeline {
                 }
             }
         }
-        
-        stage('Package') { //Dev
-            //agent { label 'linux_slave' }
+
+        stage('Package') { // Package stage
             agent any
             steps {
-                echo "This is for Package ${params.appversion}"
+                echo "This is for Package ${params.APPVERSION}" // Fixed parameter reference for app version
                 sh "mvn package"
             }
         }
