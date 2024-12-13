@@ -40,6 +40,13 @@ pipeline {
 
         stage('Package') { // Package stage
             agent any
+                input{
+                    message "Select the version to deploy"
+                    ok "Version Selected"
+                    parameter{
+                        choice(name:'NEWAPP',choices:['1.2','2.1','3.1'])
+                    }
+                }
             steps {
                 echo "This is for Package ${params.APPVERSION}" // Fixed parameter reference for app version
                 sh "mvn package"
