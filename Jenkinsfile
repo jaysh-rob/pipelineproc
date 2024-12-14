@@ -40,6 +40,11 @@ pipeline {
 
         stage('Package') { // Package stage
             agent any
+        when{
+            expression{
+                BRANCH_NAME == 'b1'
+            }
+        }
            input{
             message "Select the version to deploy"
             ok "version selected"
