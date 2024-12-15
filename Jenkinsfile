@@ -39,11 +39,7 @@ pipeline {
         }
 
         stage('Package') { // Package stage
-        when{
-            expression{
-                BRANCH_NAME=='feature'
-            }
-        }
+        
 
         input{
             message "Select the version"
