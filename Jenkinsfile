@@ -42,7 +42,7 @@ pipeline {
             agent any
         when{
             expression{
-                BRANCH_NAME == 'b1'
+                BRANCH_NAME == 'feature'
             }
         }
            input{
