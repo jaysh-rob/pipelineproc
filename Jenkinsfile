@@ -43,7 +43,7 @@ pipeline {
         }
 
         stage('Package') { // Package stage
-            agent any
+        
         when{
             expression{
                 BRANCH_NAME == 'feature'
