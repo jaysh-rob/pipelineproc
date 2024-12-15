@@ -45,16 +45,23 @@ pipeline {
                 BRANCH_NAME == 'feature'
             }
         }
-           input{
-            message "Select the version to deploy"
-            ok "version selected"
+        
+        input{
+            message "Select the version"
+            ok "Version Selected"
             parameters{
-                choice(name:'NEWAPP',choices:['3.5','5.5','4.5'])
+                choice(name:'APPVERSION', choices:['1.5', '2.5', '3.5'])
             }
-           }
+        }
+
+            
             steps {
+                script{
+                    sshagent{[slave2]}
                 echo "This is for Package ${params.APPVERSION}" // Fixed parameter reference for app version
-                sh "mvn package"
+                sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
+                sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER_IP} bash ~/server-script.sh"
+                }
             }
         }
     }
