@@ -1,6 +1,10 @@
 pipeline {
     agent none
 
+    environment{
+        DEV_SERVER_IP='ec2-user@3.109.154.51'
+    }
+
     tools {
         maven "mymaven" // Ensure 'mymaven' is defined in Jenkins global tools configuration
     }
