@@ -47,7 +47,15 @@ pipeline {
         }
 
         stage('Package') { // Package stage
+<<<<<<< HEAD
 
+=======
+        when{
+            expression{
+                BRANCH_NAME=='feature'
+            }
+        }
+>>>>>>> parent of 8df7830... Jenks when expression removed for branch
 
         input{
             message "Select the version"
