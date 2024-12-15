@@ -1,8 +1,8 @@
 pipeline {
     agent none
 
-    environment{
-        DEV_SERVER_IP='ec2-user@3.109.154.51'
+    environment {
+        DEV_SERVER_IP = 'ec2-user@3.109.154.51'
     }
 
     tools {
@@ -10,25 +10,24 @@ pipeline {
     }
 
     parameters {
-        string (defaultValue: 'Test', description: 'Environment to deploy ', name: 'ENV')
-        booleanParam (defaultValue: true, description: 'Decide to run test cases', name: 'executiveTests')  // Corrected the typo
-        choice (choices: ['1.1', '1.2', '1.3'], name: 'APPVERSION') // Fixed the extra space in choice options
+        string(defaultValue: 'Test', description: 'Environment to deploy', name: 'ENV')
+        booleanParam(defaultValue: true, description: 'Decide to run test cases', name: 'executiveTests')
+        choice(choices: ['1.1', '1.2', '1.3'], name: 'APPVERSION')
+        choice(name: 'BRANCH_NAME', choices: ['feature', 'develop', 'master'], description: 'Branch to deploy')
     }
 
     stages {
-        stage('Compile') { // Compile stage
+        stage('Compile') {
             agent any
             steps {
-                echo "This is for compile ${params.ENV}" // Fixed ENV parameter reference
+                echo "This is for compile ${params.ENV}"
                 sh "mvn compile"
             }
         }
 
-        stage('Test') { // Test stage
+        stage('Test') {
             when {
-                expression {
-                    return params.executiveTests == true // Corrected the boolean check
-                }
+                expression { params.executiveTests == true }
             }
             agent any
             steps {
@@ -37,35 +36,31 @@ pipeline {
             }
             post {
                 always {
-                    junit 'target/surefire-reports/*.xml'  // Ensure this path is correct
+                    junit 'target/surefire-reports/*.xml' // Ensure this path exists
                 }
             }
         }
 
-        stage('Package') { // Package stage
-            agent any 
-
-        when{
-            expression{
-                BRANCH_NAME == 'feature'
+        stage('Package') {
+            agent any
+            when {
+                expression { params.BRANCH_NAME == 'feature' }
             }
-        }
-        
-        input{
-            message "Select the version"
-            ok "Version Selected"
-            parameters{
-                choice(name:'APPVERSION', choices:['1.5', '2.5', '3.5'])
-            }
-        }
 
-            
+            input {
+                message "Select the version"
+                ok "Version Selected"
+                parameters {
+                    choice(name: 'SELECTED_VERSION', choices: ['1.5', '2.5', '3.5'], description: 'Choose a version to deploy')
+                }
+            }
+
             steps {
-                script{
-                    sshagent([slave2]){
-                echo "This is for Package ${params.APPVERSION}" // Fixed parameter reference for app version
-                sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
-                sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER_IP} bash ~/server-script.sh"
+                script {
+                    sshagent(['slave2']) {
+                        echo "This is for Package ${params.SELECTED_VERSION}"
+                        sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
+                        sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER_IP} bash ~/server-script.sh"
                     }
                 }
             }
