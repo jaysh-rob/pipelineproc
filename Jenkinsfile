@@ -39,6 +39,19 @@ pipeline {
         }
 
         stage('Package') { // Package stage
+        when{
+            expression{
+                BRANCH_NAME=='feature'
+            }
+        }
+
+        input{
+            message "Select the version"
+            ok "Version Selected"
+            parameters{
+                choice(name:'APPVERSION', choices:['1.5', '2.5', '3.5'])
+            }
+        }
             agent any
             
             steps {
