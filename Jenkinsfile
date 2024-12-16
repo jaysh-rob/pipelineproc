@@ -60,7 +60,7 @@ pipeline {
                     sshagent(['slave2']) {
                         echo "This is for Package ${params.SELECTED_VERSION}"
                         sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
-                        sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER_IP} bash ~/server-script.sh"
+                        sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER_IP} 'bash ~/server-script.sh"
                     }
                 }
             }
