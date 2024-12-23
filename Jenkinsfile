@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     environment {
-        DEV_SERVER_IP = 'ec2-user@3.6.160.102'
+        DEV_SERVER_IP = 'user1@15.207.89.126'
     }
 
     tools {
@@ -57,9 +57,9 @@ pipeline {
 
             steps {
                 script {
-                    sshagent(['slave2']) {
+                    sshagent(['slave1']) {
                         echo "This is for Package ${params.SELECTED_VERSION}"
-                        sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
+                        sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/user1"
                         sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER_IP} bash ~/server-script.sh"
                     }
                 }
