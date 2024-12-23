@@ -6,7 +6,7 @@ pipeline {
    }
 
    environment{
-    DEV_SERVER_IP='ec2-user@15.207.89.126'
+    DEV_SERVER_IP='user1@15.207.89.126'
     DEPLOY_SERVER_IP='ec2-user@3.6.160.102'
     IMAGE_NAME='jackdhub/jdk-mvn-addressbook'
    }
@@ -91,7 +91,7 @@ pipeline {
            }
             steps {
                   script{
-                  sshagent(['slave1']) {
+                  sshagent(['slave2']) {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                     echo "Package the code ${params.APPVERSION}"
                     sh "ssh ${DEPLOY_SERVER_IP} sudo yum install docker -y"
