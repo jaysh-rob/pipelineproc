@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     environment {
-        DEV_SERVER_IP = 'user1@15.207.89.126'
+        DEV_SERVER_IP = 'ec2-user@3.6.160.102'
     }
 
     tools {
@@ -41,29 +41,32 @@ pipeline {
             }
         }
 
-        stage('Package') {
-            agent any
-            when {
-                expression { params.BRANCH_NAME == 'feature' }
-            }
-
-            input {
-                message "Select the version"
-                ok "Version Selected"
-                parameters {
+stage('Package') {
+    agent any
+    when {
+        expression { params.BRANCH_NAME == 'feature' }
+    }
+    steps {
+        script {
+            // Capture user input for the version
+            def selectedVersion = input message: "Select the version",
+                ok: "Version Selected",
+                parameters: [
                     choice(name: 'SELECTED_VERSION', choices: ['1.5', '2.5', '3.5'], description: 'Choose a version to deploy')
-                }
-            }
+                ]
 
-            steps {
-                script {
-                    sshagent(['slave1']) {
-                        echo "This is for Package ${params.SELECTED_VERSION}"
-                        sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/user1"
-                        sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER_IP} bash ~/server-script.sh"
-                    }
-                }
+            echo "This is for Package ${selectedVersion}"
+
+            // Use SSH agent for credentials
+            sshagent(['slave2']) {
+                sh '''
+                    scp -o StrictHostKeyChecking=no server-script.sh ec2-user@3.6.160.102:/home/ec2-user
+                    ssh -o StrictHostKeyChecking=no ec2-user@3.6.160.102 "bash ~/server-script.sh"
+                '''
             }
         }
+    }
+}
+
     }
 }
