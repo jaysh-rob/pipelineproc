@@ -1,11 +1,13 @@
 #!/bin/bash
 
 
-sudo yum install java-1.8.0-openjdk-devel -y
+#sudo yum install java-1.8.0-openjdk-devel -y
 
 sudo yum install git -y
+sudo yum install docker -y 
 
-sudo yum install maven -y 
+sudo systemctl start docker 
+#sudo yum install maven -y 
 
 
 if [ -d "pipelineproc" ]
@@ -19,4 +21,6 @@ fi
 
 cd /home/ec2-user/pipelineproc 
 
-mvn package 
+git checkout feature
+
+sudo docker build -t $1:$2 /home/ec2-user/pipelineproc 
