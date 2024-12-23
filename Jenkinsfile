@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     environment {
-        DEV_SERVER_IP = 'ec2-user@3.109.154.51'
+        DEV_SERVER_IP = 'ec2-user@3.6.160.102'
     }
 
     tools {
