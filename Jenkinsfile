@@ -60,7 +60,7 @@ pipeline {
         //    }
             steps {
                   script{
-                  sshagent(['slave2']) {
+                  sshagent(['slave1']) {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                     echo "Package the code ${params.APPVERSION}"
                     sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
@@ -91,7 +91,7 @@ pipeline {
            }
             steps {
                   script{
-                  sshagent(['slave2']) {
+                  sshagent(['slave1']) {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                     echo "Package the code ${params.APPVERSION}"
                     sh "ssh ${DEPLOY_SERVER_IP} sudo yum install docker -y"
