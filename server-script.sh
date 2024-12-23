@@ -1,22 +1,26 @@
 #!/bin/bash
 
 
-sudo yum install java-1.8.0-openjdk-devel -y
+#sudo yum install java-1.8.0-openjdk-devel -y
 
 sudo yum install git -y
-
-sudo yum install maven -y 
+sudo yum install docker -y 
+sudo systemctl start docker 
+#sudo yum install maven -y 
 
 
 if [ -d "pipelineproc" ]
 then
     echo "Directory pipelineproc already exists"
+
     cd /home/ec2-user/pipelineproc
-    git pull origin feature 
+
+    git pull origin docker-1
+ 
 else
     git clone https://github.com/jaysh-rob/pipelineproc.git
 fi
 
 cd /home/ec2-user/pipelineproc 
 
-mvn package 
+sudo docker build -t $1:$2 /home/ec2-user/pipelineproc
